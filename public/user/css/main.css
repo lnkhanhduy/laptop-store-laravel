@@ -1,0 +1,333 @@
+body {
+    font-family: "Roboto", sans-serif;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+    width: 0.4vw;
+    height: 1.1vh;
+}
+::-webkit-scrollbar-thumb {
+    background: rgb(0, 45, 113);
+    border-radius: 10px;
+}
+
+/* End scroll bar */
+
+#scroll-to-top {
+    position: fixed;
+    z-index: 2147483647;
+    display: block;
+    background-color: blue;
+    color: white;
+    bottom: 0;
+    right: 0;
+    padding: 12px;
+    font-size: 22px;
+}
+
+/* Start header */
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.7s ease-in-out;
+}
+
+.header-icon:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.header-icon-facebook:hover {
+    background-color: #0083c9;
+}
+
+.header-icon-github:hover {
+    background-color: black;
+}
+
+.header-icon-gmail:hover {
+    background-color: #ce3c2d;
+}
+
+/* End header */
+
+/* Start sidebar */
+.accordion {
+    margin-top: 16px;
+    border: 1px solid #ced4da;
+    border-radius: var(--bs-border-radius);
+    --bs-accordion-btn-padding-y: 0.65rem;
+}
+
+.accordion-item {
+    border: none;
+}
+
+.accordion-button::after {
+    font-size: 14px;
+    content: "\2795";
+    background-image: none;
+    display: flex;
+    align-items: center;
+}
+
+.accordion-button:not(.collapsed)::after {
+    font-size: 14px;
+    content: "\2796";
+    background-image: none;
+    display: flex;
+    align-items: center;
+}
+
+#sidebar-brand-accordion .accordion-button:not(.collapsed),
+.no-child .accordion-button:not(.collapsed) {
+    background-color: white;
+    color: #212529;
+    box-shadow: none;
+}
+#sidebar-brand-accordion .accordion-button::after,
+.no-child .accordion-button::after,
+#sidebar-brand-accordion .accordion-button:not(.collapsed)::after {
+    content: "";
+    background-image: none;
+}
+
+/* End sidebar */
+
+/* Start breadcrumb */
+.breadcrumb {
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.breadcrumb a {
+    color: #428bca;
+}
+/* End breadcrumb */
+
+.text-title {
+    text-align: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #052c65;
+}
+
+.card-title {
+    font-size: 15px;
+    max-height: 3.6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.card-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(20, 53, 195);
+}
+
+.card-price-old {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 14px;
+    text-decoration: line-through;
+    color: rgb(130, 134, 158);
+}
+
+.card-price-percent {
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(20, 53, 195);
+}
+
+.card-title-post {
+    font-size: 20px;
+    max-height: 40px;
+    color: blue;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.card-desc-post {
+    font-size: 14px;
+    max-height: 58px;
+    color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+/* Start carousel */
+.carousel-control-prev-icon {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: none;
+    color: blue;
+}
+
+.carousel-control-next-icon {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: none;
+    color: blue;
+}
+
+.carousel-indicators [data-bs-target] {
+    width: 20px;
+    background-color: blue;
+}
+
+/* End carousel */
+
+.lSPager.lSGallery {
+    height: 80px;
+}
+
+/* Start content */
+.content {
+    padding: 20px;
+    width: calc(100% - var(--width-sidebar));
+    position: relative;
+    min-height: 68vh;
+}
+
+.alert-container {
+    position: absolute;
+    top: 10px;
+    right: 2px;
+    z-index: 10000;
+    width: 300px;
+    height: auto;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.alert-container.show-animation {
+    animation: alertShow 1s ease-out;
+}
+
+.alert-container.hide-animation {
+    animation: alertHide 1s ease-out;
+}
+
+@keyframes alertShow {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes alertHide {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+.alert-container .alert {
+    --bs-alert-margin-bottom: 0;
+    --bs-border-radius: 0;
+}
+
+.alert-container .progress {
+    --bs-progress-height: 5px;
+    --bs-border-radius: 0;
+}
+
+.card {
+    width: 100%;
+}
+
+.card-header {
+    height: calc(var(--height-sidebar-header) - 10px);
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* End content */
+
+/* Start navbar */
+.nav {
+    background-color: #e3f2fd;
+}
+
+.nav-tabs .nav-link {
+    color: #0755cb;
+    padding: 14px 18px;
+    border: inherit;
+    border-radius: 0;
+    transition: background-color 0.8s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #0d6efd;
+    color: white;
+    border: inherit;
+    border-radius: 0;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+/* End navbar */
+
+/* Start reply comment */
+.reply-comment {
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    border: none;
+    position: relative;
+    padding: 16px;
+}
+
+.reply-comment::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: -10px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #f7f7f7;
+}
+/* End reply comment */
+
+/* Hidden arrow input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+/* End hidden arrow input number */

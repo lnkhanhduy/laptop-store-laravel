@@ -1,0 +1,69 @@
+@media screen and (max-width: 768px) {
+    .sidebar-header {
+        font-size: 26px;
+    }
+
+    .accordion-button {
+        font-size: 13px;
+    }
+
+    .sidebar-footer {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    :root {
+        --height-sidebar-header: 50px;
+        --height-sidebar-panel: calc(100% - var(--height-sidebar-header));
+        --height-sidebar-menu: calc(100% - var(--height-sidebar-footer));
+        --height-sidebar-footer: 30px;
+    }
+    .container-fluid {
+        display: inline-block;
+        font-size: 13px;
+    }
+
+    .sidebar-container {
+        height: var(--height-sidebar-header);
+    }
+
+    .content {
+        height: 100%;
+    }
+
+    .btn.toggle-sidebar-panel {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+        left: 20px;
+    }
+    #toggle-sidebar-panel {
+        display: none;
+        height: 0;
+    }
+    .accordion {
+        --bs-accordion-btn-padding-y: 0.9rem;
+    }
+    .sidebar-header a {
+        padding: 10px;
+    }
+    .sidebar-footer {
+        font-size: 13px;
+        padding: 0 20px;
+    }
+    .sidebar-footer img {
+        width: 24px;
+        height: 24px;
+    }
+    .sidebar-footer a i {
+        font-size: 18px;
+    }
+    .accordion-button {
+        font-size: 13px;
+    }
+    .accordion-button::after {
+        width: 8px;
+        height: 8px;
+    }
+}
