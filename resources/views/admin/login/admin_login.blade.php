@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="container d-flex justify-content-center">
+    <div class=" d-flex justify-content-center">
         <div class="card" style="width: 400px;margin-top: 100px">
             <div class="card-body">
                 <form class="needs-validation" id="form-login-admin" method="POST" action="{{URL::to('/admin/login')}}"
@@ -49,45 +49,45 @@
     <script src="{{URL::to('/public/admin/js/validate-forms.js')}}"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#form-login-admin').submit(function(e) {
-                e.preventDefault();
-                $('#password').next().text('Vui lòng nhập mật khẩu!');
-                if (this.checkValidity() === false) {
-                    e.stopPropagation();
+    $(document).ready(function() {
+        $('#form-login-admin').submit(function(e) {
+            e.preventDefault();
+            $('#password').next().text('Vui lòng nhập mật khẩu!');
+            if (this.checkValidity() === false) {
+                e.stopPropagation();
+            } else {
+                if ($('#password').val().length < 6) {
+                    $('#form-login-admin').removeClass('was-validated');
+                    $('#password').addClass('is-invalid');
+                    $('#password').next().text('Mật khẩu ít nhất 6 ký tự!');
                 } else {
-                    if ($('#password').val().length < 6) {
-                        $('#form-login-admin').removeClass('was-validated');
-                        $('#password').addClass('is-invalid');
-                        $('#password').next().text('Mật khẩu ít nhất 6 ký tự!');
-                    } else {
-                        $.ajax({
-                            type: "POST",
-                            url: "{{URL::to('/admin/login')}}",
-                            data: {
-                                _token: "{{ csrf_token() }}",
-                                email: $('#email').val(),
-                                password: $('#password').val()
-                            },
-                            success: function(data) {
-                                if (data.status == 200) {
-                                    window.location.href = "{{URL::to('/admin')}}";
-                                } else if (data.status == 422) {
-                                    $('#form-login-admin').removeClass('was-validated');
-                                    $('#password').addClass('is-invalid');
-                                    $('#password').next().text(
-                                        data.message);
-                                } else {
-                                    console.log(data);
-                                }
-                            },
-                            error: function(data) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{URL::to('/admin/login')}}",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            email: $('#email').val(),
+                            password: $('#password').val()
+                        },
+                        success: function(data) {
+                            if (data.status == 200) {
+                                window.location.href = "{{URL::to('/admin')}}";
+                            } else if (data.status == 422) {
+                                $('#form-login-admin').removeClass('was-validated');
+                                $('#password').addClass('is-invalid');
+                                $('#password').next().text(
+                                    data.message);
+                            } else {
                                 console.log(data);
                             }
-                        })
-                    }
+                        },
+                        error: function(data) {
+                            console.log(data);
+                        }
+                    })
                 }
-            })
+            }
         })
+    })
     </script>
 </body>

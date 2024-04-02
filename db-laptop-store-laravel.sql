@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 21, 2023 at 02:31 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th4 02, 2024 lúc 04:07 AM
+-- Phiên bản máy phục vụ: 10.4.28-MariaDB
+-- Phiên bản PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db-laptop-store-laravel`
+-- Cơ sở dữ liệu: `db-laptop-store-laravel`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_admin`
+-- Cấu trúc bảng cho bảng `tbl_admin`
 --
 
 CREATE TABLE `tbl_admin` (
@@ -37,7 +37,7 @@ CREATE TABLE `tbl_admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `tbl_admin`
+-- Đang đổ dữ liệu cho bảng `tbl_admin`
 --
 
 INSERT INTO `tbl_admin` (`admin_id`, `admin_name`, `admin_email`, `admin_password`, `created_at`, `updated_at`) VALUES
@@ -46,7 +46,7 @@ INSERT INTO `tbl_admin` (`admin_id`, `admin_name`, `admin_email`, `admin_passwor
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_banner`
+-- Cấu trúc bảng cho bảng `tbl_banner`
 --
 
 CREATE TABLE `tbl_banner` (
@@ -58,10 +58,17 @@ CREATE TABLE `tbl_banner` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_banner`
+--
+
+INSERT INTO `tbl_banner` (`banner_id`, `banner_name`, `banner_image`, `banner_status`, `created_at`, `updated_at`) VALUES
+(1, 'abcd', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-3_1712006270.jpg', 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_brand`
+-- Cấu trúc bảng cho bảng `tbl_brand`
 --
 
 CREATE TABLE `tbl_brand` (
@@ -73,10 +80,17 @@ CREATE TABLE `tbl_brand` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_brand`
+--
+
+INSERT INTO `tbl_brand` (`brand_id`, `brand_name`, `brand_slug`, `brand_status`, `created_at`, `updated_at`) VALUES
+(1, 'dell', 'dell', 1, '2024-04-01 21:08:53', NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_cart`
+-- Cấu trúc bảng cho bảng `tbl_cart`
 --
 
 CREATE TABLE `tbl_cart` (
@@ -91,7 +105,7 @@ CREATE TABLE `tbl_cart` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_category_post`
+-- Cấu trúc bảng cho bảng `tbl_category_post`
 --
 
 CREATE TABLE `tbl_category_post` (
@@ -106,7 +120,7 @@ CREATE TABLE `tbl_category_post` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_category_product`
+-- Cấu trúc bảng cho bảng `tbl_category_product`
 --
 
 CREATE TABLE `tbl_category_product` (
@@ -119,10 +133,17 @@ CREATE TABLE `tbl_category_product` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_category_product`
+--
+
+INSERT INTO `tbl_category_product` (`category_product_id`, `category_product_name`, `category_product_slug`, `category_product_parent`, `category_product_status`, `created_at`, `updated_at`) VALUES
+(1, 'danh muc con 1', 'danh-muc-con-1', 0, 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_comment`
+-- Cấu trúc bảng cho bảng `tbl_comment`
 --
 
 CREATE TABLE `tbl_comment` (
@@ -136,10 +157,17 @@ CREATE TABLE `tbl_comment` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_comment`
+--
+
+INSERT INTO `tbl_comment` (`comment_id`, `comment_content`, `comment_reply`, `user_id`, `product_id`, `comment_status`, `created_at`, `updated_at`) VALUES
+(1, 'hihih', '', 1, 6, 0, '2024-04-01 19:03:40', '2024-04-01 19:03:40');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_gallery`
+-- Cấu trúc bảng cho bảng `tbl_gallery`
 --
 
 CREATE TABLE `tbl_gallery` (
@@ -150,10 +178,20 @@ CREATE TABLE `tbl_gallery` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_gallery`
+--
+
+INSERT INTO `tbl_gallery` (`gallery_id`, `gallery_image`, `product_id`, `created_at`, `updated_at`) VALUES
+(1, 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-2_1712006079.jpg', 1, NULL, NULL),
+(2, 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-3_1712006079.jpg', 1, NULL, NULL),
+(3, 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-4_1712006079.jpg', 1, NULL, NULL),
+(4, 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-5_1712006079.jpg', 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_order`
+-- Cấu trúc bảng cho bảng `tbl_order`
 --
 
 CREATE TABLE `tbl_order` (
@@ -162,10 +200,9 @@ CREATE TABLE `tbl_order` (
   `order_code` varchar(255) NOT NULL,
   `order_name` varchar(255) NOT NULL,
   `order_address` varchar(255) NOT NULL,
-  `order_email` varchar(255) NOT NULL,
   `order_phone` varchar(255) NOT NULL,
   `order_note` text NOT NULL,
-  `order_payment_method` int(11) NOT NULL,
+  `order_payment_method` varchar(255) NOT NULL,
   `voucher_id` varchar(255) NOT NULL,
   `order_total` varchar(255) NOT NULL,
   `order_status` int(11) NOT NULL,
@@ -173,10 +210,18 @@ CREATE TABLE `tbl_order` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_order`
+--
+
+INSERT INTO `tbl_order` (`order_id`, `user_id`, `order_code`, `order_name`, `order_address`, `order_phone`, `order_note`, `order_payment_method`, `voucher_id`, `order_total`, `order_status`, `created_at`, `updated_at`) VALUES
+(1, 1, 'DHSTS5ooSR2f', 'Duy', '1', '123456', '0', 'cod_payment', '0', '83960000', 0, '2024-04-01 17:52:35', '2024-04-01 17:52:35'),
+(2, 1, 'DHRD3areieQt', 'Duy 1', '111', '111', '1', 'cod_payment', '0', '20990000', 0, '2024-04-01 17:55:46', '2024-04-01 17:55:46');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_order_detail`
+-- Cấu trúc bảng cho bảng `tbl_order_detail`
 --
 
 CREATE TABLE `tbl_order_detail` (
@@ -189,10 +234,20 @@ CREATE TABLE `tbl_order_detail` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_order_detail`
+--
+
+INSERT INTO `tbl_order_detail` (`order_detail_id`, `order_id`, `product_id`, `product_quantity`, `product_price`, `created_at`, `updated_at`) VALUES
+(1, 1, 5, 2, '20990000', NULL, NULL),
+(2, 1, 3, 1, '20990000', NULL, NULL),
+(3, 1, 6, 1, '20990000', NULL, NULL),
+(4, 2, 6, 1, '20990000', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_post`
+-- Cấu trúc bảng cho bảng `tbl_post`
 --
 
 CREATE TABLE `tbl_post` (
@@ -212,7 +267,7 @@ CREATE TABLE `tbl_post` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_product`
+-- Cấu trúc bảng cho bảng `tbl_product`
 --
 
 CREATE TABLE `tbl_product` (
@@ -224,7 +279,6 @@ CREATE TABLE `tbl_product` (
   `product_quantity` int(11) NOT NULL,
   `product_sold` int(11) NOT NULL,
   `product_desc` text NOT NULL,
-  `product_content` text NOT NULL,
   `product_cost` varchar(255) NOT NULL,
   `product_price` varchar(255) NOT NULL,
   `product_price_discount` varchar(255) NOT NULL,
@@ -235,10 +289,22 @@ CREATE TABLE `tbl_product` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_product`
+--
+
+INSERT INTO `tbl_product` (`product_id`, `product_name`, `product_slug`, `category_product_id`, `brand_id`, `product_quantity`, `product_sold`, `product_desc`, `product_cost`, `product_price`, `product_price_discount`, `product_image`, `product_status`, `product_views`, `created_at`, `updated_at`) VALUES
+(1, 'asus1', 'asus1', 1, 1, 10, 0, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 27, NULL, NULL),
+(2, 'asus11', 'asus11', 1, 1, 10, 0, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 2, NULL, NULL),
+(3, 'asus12', 'asus12', 1, 1, 10, 1, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 2, NULL, NULL),
+(4, 'asus13', 'asus13', 1, 1, 10, 0, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 2, NULL, NULL),
+(5, 'asus14', 'asus14', 1, 1, 10, 2, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 3, NULL, NULL),
+(6, ' Lorem, ipsum dolor sit amet consectetur adipisicing elit. Culpa excepturi, laudantium, dignissimos voluptatibus minus aliquam voluptas nisi, consequuntur repellat error cum aspernatur beatae accusantium quis vero? Numquam odio eius neque.', 'asus15', 1, 1, 10, 2, 'asus1', '17000000', '20990000', '0', 'asus-vivobook-go-15-e1504fa-r5-nj776w-glr-1_1712006066.jpg', 1, 22, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_social`
+-- Cấu trúc bảng cho bảng `tbl_social`
 --
 
 CREATE TABLE `tbl_social` (
@@ -253,7 +319,7 @@ CREATE TABLE `tbl_social` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_statistical`
+-- Cấu trúc bảng cho bảng `tbl_statistical`
 --
 
 CREATE TABLE `tbl_statistical` (
@@ -267,10 +333,17 @@ CREATE TABLE `tbl_statistical` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_statistical`
+--
+
+INSERT INTO `tbl_statistical` (`statistical_id`, `statistical_date`, `statistical_sales`, `statistical_profit`, `statistical_quantity`, `statistical_total_order`, `created_at`, `updated_at`) VALUES
+(1, '2024-04-02', '104950000', '19950000', 5, 2, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_user`
+-- Cấu trúc bảng cho bảng `tbl_user`
 --
 
 CREATE TABLE `tbl_user` (
@@ -283,10 +356,17 @@ CREATE TABLE `tbl_user` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_user`
+--
+
+INSERT INTO `tbl_user` (`user_id`, `full_name`, `user_email`, `user_password`, `reset_code`, `created_at`, `updated_at`) VALUES
+(1, 'Duy', 'khanhduyhby731@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '327872', '2024-04-01 12:58:51', '2024-04-01 13:00:32');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_voucher`
+-- Cấu trúc bảng cho bảng `tbl_voucher`
 --
 
 CREATE TABLE `tbl_voucher` (
@@ -304,204 +384,211 @@ CREATE TABLE `tbl_voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Indexes for dumped tables
+-- Đang đổ dữ liệu cho bảng `tbl_voucher`
+--
+
+INSERT INTO `tbl_voucher` (`voucher_id`, `voucher_name`, `voucher_code`, `voucher_type`, `voucher_discount_amount`, `voucher_quantity`, `voucher_used`, `voucher_used_by_user`, `voucher_status`, `created_at`, `updated_at`) VALUES
+(1, 'Mã giảm giá 1', 'VLTI4VRBCH', 1, '150000', 10, 0, '', 1, NULL, NULL);
+
+--
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `tbl_admin`
+-- Chỉ mục cho bảng `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
   ADD PRIMARY KEY (`admin_id`);
 
 --
--- Indexes for table `tbl_banner`
+-- Chỉ mục cho bảng `tbl_banner`
 --
 ALTER TABLE `tbl_banner`
   ADD PRIMARY KEY (`banner_id`);
 
 --
--- Indexes for table `tbl_brand`
+-- Chỉ mục cho bảng `tbl_brand`
 --
 ALTER TABLE `tbl_brand`
   ADD PRIMARY KEY (`brand_id`);
 
 --
--- Indexes for table `tbl_cart`
+-- Chỉ mục cho bảng `tbl_cart`
 --
 ALTER TABLE `tbl_cart`
   ADD PRIMARY KEY (`cart_id`);
 
 --
--- Indexes for table `tbl_category_post`
+-- Chỉ mục cho bảng `tbl_category_post`
 --
 ALTER TABLE `tbl_category_post`
   ADD PRIMARY KEY (`category_post_id`);
 
 --
--- Indexes for table `tbl_category_product`
+-- Chỉ mục cho bảng `tbl_category_product`
 --
 ALTER TABLE `tbl_category_product`
   ADD PRIMARY KEY (`category_product_id`);
 
 --
--- Indexes for table `tbl_comment`
+-- Chỉ mục cho bảng `tbl_comment`
 --
 ALTER TABLE `tbl_comment`
   ADD PRIMARY KEY (`comment_id`);
 
 --
--- Indexes for table `tbl_gallery`
+-- Chỉ mục cho bảng `tbl_gallery`
 --
 ALTER TABLE `tbl_gallery`
   ADD PRIMARY KEY (`gallery_id`);
 
 --
--- Indexes for table `tbl_order`
+-- Chỉ mục cho bảng `tbl_order`
 --
 ALTER TABLE `tbl_order`
   ADD PRIMARY KEY (`order_id`);
 
 --
--- Indexes for table `tbl_order_detail`
+-- Chỉ mục cho bảng `tbl_order_detail`
 --
 ALTER TABLE `tbl_order_detail`
   ADD PRIMARY KEY (`order_detail_id`);
 
 --
--- Indexes for table `tbl_post`
+-- Chỉ mục cho bảng `tbl_post`
 --
 ALTER TABLE `tbl_post`
   ADD PRIMARY KEY (`post_id`);
 
 --
--- Indexes for table `tbl_product`
+-- Chỉ mục cho bảng `tbl_product`
 --
 ALTER TABLE `tbl_product`
   ADD PRIMARY KEY (`product_id`);
 
 --
--- Indexes for table `tbl_social`
+-- Chỉ mục cho bảng `tbl_social`
 --
 ALTER TABLE `tbl_social`
   ADD PRIMARY KEY (`social_id`);
 
 --
--- Indexes for table `tbl_statistical`
+-- Chỉ mục cho bảng `tbl_statistical`
 --
 ALTER TABLE `tbl_statistical`
   ADD PRIMARY KEY (`statistical_id`);
 
 --
--- Indexes for table `tbl_user`
+-- Chỉ mục cho bảng `tbl_user`
 --
 ALTER TABLE `tbl_user`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Indexes for table `tbl_voucher`
+-- Chỉ mục cho bảng `tbl_voucher`
 --
 ALTER TABLE `tbl_voucher`
   ADD PRIMARY KEY (`voucher_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `tbl_admin`
+-- AUTO_INCREMENT cho bảng `tbl_admin`
 --
 ALTER TABLE `tbl_admin`
   MODIFY `admin_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_banner`
+-- AUTO_INCREMENT cho bảng `tbl_banner`
 --
 ALTER TABLE `tbl_banner`
-  MODIFY `banner_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `banner_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_brand`
+-- AUTO_INCREMENT cho bảng `tbl_brand`
 --
 ALTER TABLE `tbl_brand`
-  MODIFY `brand_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `brand_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_cart`
+-- AUTO_INCREMENT cho bảng `tbl_cart`
 --
 ALTER TABLE `tbl_cart`
-  MODIFY `cart_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `tbl_category_post`
+-- AUTO_INCREMENT cho bảng `tbl_category_post`
 --
 ALTER TABLE `tbl_category_post`
   MODIFY `category_post_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_category_product`
+-- AUTO_INCREMENT cho bảng `tbl_category_product`
 --
 ALTER TABLE `tbl_category_product`
-  MODIFY `category_product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `category_product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_comment`
+-- AUTO_INCREMENT cho bảng `tbl_comment`
 --
 ALTER TABLE `tbl_comment`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_gallery`
+-- AUTO_INCREMENT cho bảng `tbl_gallery`
 --
 ALTER TABLE `tbl_gallery`
-  MODIFY `gallery_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `gallery_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `tbl_order`
+-- AUTO_INCREMENT cho bảng `tbl_order`
 --
 ALTER TABLE `tbl_order`
-  MODIFY `order_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tbl_order_detail`
+-- AUTO_INCREMENT cho bảng `tbl_order_detail`
 --
 ALTER TABLE `tbl_order_detail`
-  MODIFY `order_detail_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `order_detail_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `tbl_post`
+-- AUTO_INCREMENT cho bảng `tbl_post`
 --
 ALTER TABLE `tbl_post`
   MODIFY `post_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_product`
+-- AUTO_INCREMENT cho bảng `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `tbl_social`
+-- AUTO_INCREMENT cho bảng `tbl_social`
 --
 ALTER TABLE `tbl_social`
   MODIFY `social_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tbl_statistical`
+-- AUTO_INCREMENT cho bảng `tbl_statistical`
 --
 ALTER TABLE `tbl_statistical`
-  MODIFY `statistical_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `statistical_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_user`
+-- AUTO_INCREMENT cho bảng `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_voucher`
+-- AUTO_INCREMENT cho bảng `tbl_voucher`
 --
 ALTER TABLE `tbl_voucher`
-  MODIFY `voucher_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `voucher_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

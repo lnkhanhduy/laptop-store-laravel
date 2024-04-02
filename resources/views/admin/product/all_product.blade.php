@@ -97,19 +97,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="product_desc">Mô tả ngắn</label>
+                        <label for="product_desc">Mô tả</label>
                         <textarea style="resize:none" rows="3" name="product_desc" class="form-control"
                             id="product_desc" required></textarea>
                         <div class="invalid-feedback">
                             Vui lòng nhập mô tả sản phẩm!
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="product_content">Nội dung sản phẩm</label>
-                        <textarea style="resize:none" rows="5" name="product_content" class="form-control"
-                            id="product_content" required></textarea>
-                        <div class="invalid-feedback">
-                            Vui lòng nội dung sản phẩm sản phẩm!
                         </div>
                     </div>
                     <div class="row">
@@ -185,211 +177,209 @@
 
 @section('admin_script')
 <script type="text/javascript">
-    $(document).ready(function() {
-        document.title = "Admin - Sản phẩm";
-        CKEDITOR.replace('product_content');
+$(document).ready(function() {
+    document.title = "Admin - Sản phẩm";
 
-        get_product();
-        get_all_category_product();
-        get_all_brand();
-        convert_to_slug("#product_name", "#product_slug");
+    get_product();
+    get_all_category_product();
+    get_all_brand();
+    convert_to_slug("#product_name", "#product_slug");
 
-        $('.btn-add-product').click(function() {
-            $('#modal-title-product').text('Thêm sản phẩm');
+    $('.btn-add-product').click(function() {
+        $('#modal-title-product').text('Thêm sản phẩm');
 
-            set_product_data({}, false);
-            $('#product_image').prop('required', true);
-            $('#product_status').val('1');
-            $('#btn-submit-product').show();
-            $('#product_parent').val(0);
-            $('#btn-submit-product').text('Thêm');
+        set_product_data({}, false);
+        $('#product_image').prop('required', true);
+        $('#product_status').val('1');
+        $('#btn-submit-product').show();
+        $('#product_parent').val(0);
+        $('#btn-submit-product').text('Thêm');
 
+        $('#modal-product').modal('show');
+    });
+
+    $(document).on('click', '.btn-detail-product', function() {
+        let product_id = $(this).parent().parent().parent().parent().data(
+            'product-id');
+
+        get_product_by_id(product_id).then(function(result) {
+            set_product_data(result, true);
+            $('#modal-title-product').text('Thông tin sản phẩm');
+            $('#btn-submit-product').hide();
             $('#modal-product').modal('show');
+        }).catch(function(error) {
+            console.error(error);
         });
 
-        $(document).on('click', '.btn-detail-product', function() {
-            let product_id = $(this).parent().parent().parent().parent().data(
-                'product-id');
+    });
 
-            get_product_by_id(product_id).then(function(result) {
-                set_product_data(result, true);
-                $('#modal-title-product').text('Thông tin sản phẩm');
-                $('#btn-submit-product').hide();
+    $(document).on('click', '.btn-edit-product', function() {
+        let product_id = $(this).parent().parent().parent().parent().data(
+            'product-id');
+
+        get_product_by_id(product_id)
+            .then(function(resultGet) {
+                set_product_data(resultGet, false);
+                $('#product_image').prop('required', false);
+                $('#modal-title-product').text('Cập nhật sản phẩm');
+                $('#btn-submit-product').show();
+                $('#btn-submit-product').text('Cập nhật');
                 $('#modal-product').modal('show');
             }).catch(function(error) {
                 console.error(error);
             });
+    });
 
-        });
+    $(document).on('click', '.btn-delete-product', function() {
+        let product_id = $(this).parent().parent().parent().parent().data(
+            'product-id');
+        show_modal_confirm_delete('Bạn muốn xóa sản phẩm này', 'data-product-id',
+            product_id);
+    });
 
-        $(document).on('click', '.btn-edit-product', function() {
-            let product_id = $(this).parent().parent().parent().parent().data(
-                'product-id');
+    $(document).on('click', '.btn-active-product', function() {
+        let product_id = $(this).parent().parent().data('product-id');
+        change_status_product(product_id, 'active-product');
+    });
 
-            get_product_by_id(product_id)
-                .then(function(resultGet) {
-                    set_product_data(resultGet, false);
-                    $('#product_image').prop('required', false);
-                    $('#modal-title-product').text('Cập nhật sản phẩm');
-                    $('#btn-submit-product').show();
-                    $('#btn-submit-product').text('Cập nhật');
-                    $('#modal-product').modal('show');
-                }).catch(function(error) {
-                    console.error(error);
-                });
-        });
+    $(document).on('click', '.btn-unactive-product', function() {
+        let product_id = $(this).parent().parent().data('product-id');
+        change_status_product(product_id, 'unactive-product');
+    });
 
-        $(document).on('click', '.btn-delete-product', function() {
-            let product_id = $(this).parent().parent().parent().parent().data(
-                'product-id');
-            show_modal_confirm_delete('Bạn muốn xóa sản phẩm này', 'data-product-id',
-                product_id);
-        });
-
-        $(document).on('click', '.btn-active-product', function() {
-            let product_id = $(this).parent().parent().data('product-id');
-            change_status_product(product_id, 'active-product');
-        });
-
-        $(document).on('click', '.btn-unactive-product', function() {
-            let product_id = $(this).parent().parent().data('product-id');
-            change_status_product(product_id, 'unactive-product');
-        });
-
-        $('#btn-submit-confirm-delete').click(function() {
-            let data_class = $(this).attr('data-class');
-            if (data_class == 'single') {
-                let product_id = $(this).attr('data-product-id');
-                delete_product(product_id);
-            } else if (data_class == 'multi') {
-                let product_ids = $(this).attr('data-product-id').split(',');
-                $.each(product_ids, function(key, value) {
-                    delete_product(value);
-                });
-            }
-
-        })
-
-        $(document).on('change', '.select-filter-product', function() {
-            let select = $(this).val();
-            if (select == 1 || select == 2 || select == 3 || select == 7) {
-                $('.btn-filter-product').addClass('d-none');
-            } else {
-                $('.btn-filter-product').removeClass('d-none');
-            }
-
-            switch (select) {
-                case '1':
-                    get_product();
-                    break;
-                case '2':
-                    get_product(url = "{{URL::to('/admin/get-all-product-by-status/1')}}",
-                        select_value = select);
-                    break;
-                case '3':
-                    get_product(url = "{{URL::to('/admin/get-all-product-by-status/0')}}",
-                        select_value = select);
-                    break;
-                default:
-                    break;
-            }
-        })
-
-        $('.btn-filter-product').click(function() {
-            let select = $('.select-filter-product').val();
-            let product_ids = [];
-            $('#tbody-product > tr').each(function(index, item) {
-                if ($(this).find('input').is(':checked')) {
-                    let product_id = $(this).data('product-id');
-                    switch (select) {
-                        case '4':
-                            change_status_product(product_id,
-                                'active-product');
-                            break;
-                        case '5':
-                            change_status_product(product_id,
-                                'unactive-product');
-                            break;
-                        case '6':
-                            product_ids.push(product_id);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+    $('#btn-submit-confirm-delete').click(function() {
+        let data_class = $(this).attr('data-class');
+        if (data_class == 'single') {
+            let product_id = $(this).attr('data-product-id');
+            delete_product(product_id);
+        } else if (data_class == 'multi') {
+            let product_ids = $(this).attr('data-product-id').split(',');
+            $.each(product_ids, function(key, value) {
+                delete_product(value);
             });
-            if (product_ids.length > 0) {
-                show_modal_confirm_delete(
-                    'Bạn có chắc muốn xóa tất cả sản phẩm này?', 'data-product-id',
-                    product_ids,
-                    'multi');
-            }
-        })
+        }
 
-        $("#form-product").submit(function(e) {
-            e.preventDefault();
-            if (this.checkValidity() === false) {
-                e.stopPropagation();
-            } else {
-                let product_id = $('#product_id').val();
-                let product_name = $('#product_name').val();
-                let product_slug = $('#product_slug').val();
-                let category_product_id = $('#category_product_id').val();
-                let brand_id = $('#brand_id').val();
-                let product_quantity = $('#product_quantity').val();
-                let product_desc = $('#product_desc').val();
-                let product_content = $('#product_content').val();
-                let product_cost = $('#product_cost').val();
-                let product_price = $('#product_price').val();
-                let product_price_discount = $('#product_price_discount').val();
-                let product_image = $('#product_image')[0].files[0];
-                let product_status = $('#product_status').val();
+    })
 
-                if (product_id) {
-                    update_product(product_id, product_name, product_slug, category_product_id,
-                        brand_id, product_quantity, product_desc, product_content, product_cost,
-                        product_price, product_price_discount, product_image, product_status);
-                } else {
-                    add_product(product_name, product_slug, category_product_id, brand_id,
-                        product_quantity, product_desc, product_content, product_cost,
-                        product_price, product_price_discount, product_image, product_status);
+    $(document).on('change', '.select-filter-product', function() {
+        let select = $(this).val();
+        if (select == 1 || select == 2 || select == 3 || select == 7) {
+            $('.btn-filter-product').addClass('d-none');
+        } else {
+            $('.btn-filter-product').removeClass('d-none');
+        }
+
+        switch (select) {
+            case '1':
+                get_product();
+                break;
+            case '2':
+                get_product(url = "{{URL::to('/admin/get-all-product-by-status/1')}}",
+                    select_value = select);
+                break;
+            case '3':
+                get_product(url = "{{URL::to('/admin/get-all-product-by-status/0')}}",
+                    select_value = select);
+                break;
+            default:
+                break;
+        }
+    })
+
+    $('.btn-filter-product').click(function() {
+        let select = $('.select-filter-product').val();
+        let product_ids = [];
+        $('#tbody-product > tr').each(function(index, item) {
+            if ($(this).find('input').is(':checked')) {
+                let product_id = $(this).data('product-id');
+                switch (select) {
+                    case '4':
+                        change_status_product(product_id,
+                            'active-product');
+                        break;
+                    case '5':
+                        change_status_product(product_id,
+                            'unactive-product');
+                        break;
+                    case '6':
+                        product_ids.push(product_id);
+                        break;
+                    default:
+                        break;
                 }
             }
         });
+        if (product_ids.length > 0) {
+            show_modal_confirm_delete(
+                'Bạn có chắc muốn xóa tất cả sản phẩm này?', 'data-product-id',
+                product_ids,
+                'multi');
+        }
+    })
 
-        $('#form-search-product').submit(function(e) {
-            e.preventDefault();
-            let keyword = $('#keyword-search-product').val();
-            if (keyword) {
-                get_product(url = `{{URL::to('/admin/search-product/${keyword}')}}`,
-                    select_value = 7,
-                    search_keyword = keyword);
+    $("#form-product").submit(function(e) {
+        e.preventDefault();
+        if (this.checkValidity() === false) {
+            e.stopPropagation();
+        } else {
+            let product_id = $('#product_id').val();
+            let product_name = $('#product_name').val();
+            let product_slug = $('#product_slug').val();
+            let category_product_id = $('#category_product_id').val();
+            let brand_id = $('#brand_id').val();
+            let product_quantity = $('#product_quantity').val();
+            let product_desc = $('#product_desc').val();
+            let product_cost = $('#product_cost').val();
+            let product_price = $('#product_price').val();
+            let product_price_discount = $('#product_price_discount').val();
+            let product_image = $('#product_image')[0].files[0];
+            let product_status = $('#product_status').val();
+
+            if (product_id) {
+                update_product(product_id, product_name, product_slug, category_product_id,
+                    brand_id, product_quantity, product_desc, product_cost,
+                    product_price, product_price_discount, product_image, product_status);
             } else {
-                get_product();
+                add_product(product_name, product_slug, category_product_id, brand_id,
+                    product_quantity, product_desc, product_cost,
+                    product_price, product_price_discount, product_image, product_status);
             }
-        });
+        }
+    });
 
-        $('#keyword-search-product').keyup(function(e) {
-            if ($(this).val().length == 0) {
-                get_product();
-            }
-        })
+    $('#form-search-product').submit(function(e) {
+        e.preventDefault();
+        let keyword = $('#keyword-search-product').val();
+        if (keyword) {
+            get_product(url = `{{URL::to('/admin/search-product/${keyword}')}}`,
+                select_value = 7,
+                search_keyword = keyword);
+        } else {
+            get_product();
+        }
+    });
 
-        $(document).on('click', '.pagination .page-link', function(e) {
-            e.preventDefault();
-            let url = $(this).attr('href');
-            let keyword = $('#keyword-search-product').val();
-            let select_value = $('.select-filter-product').val();
-            get_product(url, select_value = select_value, search_keyword =
-                keyword);
-        })
+    $('#keyword-search-product').keyup(function(e) {
+        if ($(this).val().length == 0) {
+            get_product();
+        }
+    })
 
-        function load_data_table(data) {
-            $('#tbody-product').empty();
+    $(document).on('click', '.pagination .page-link', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+        let keyword = $('#keyword-search-product').val();
+        let select_value = $('.select-filter-product').val();
+        get_product(url, select_value = select_value, search_keyword =
+            keyword);
+    })
 
-            $.each(data.data, function(key, value) {
-                $('#tbody-product').append(
-                    `<tr data-product-id="${value.product_id}">>
+    function load_data_table(data) {
+        $('#tbody-product').empty();
+
+        $.each(data.data, function(key, value) {
+            $('#tbody-product').append(
+                `<tr data-product-id="${value.product_id}">>
                             <td>
                                 <label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label>
                             </td>
@@ -423,328 +413,324 @@
                             </div>
                         </td>
                     </tr>`
-                )
-            })
-        }
+            )
+        })
+    }
 
-        function get_product(url = "{{URL::to('/admin/get-all-product')}}", select_value = 1,
-            search_keyword = '') {
+    function get_product(url = "{{URL::to('/admin/get-all-product')}}", select_value = 1,
+        search_keyword = '') {
+        $.ajax({
+            type: "GET",
+            url,
+            data: {
+                pagination: true
+            },
+            success: function(data) {
+                if (data.status == 200) {
+                    $('#keyword-search-product').val(search_keyword);
+                    $('.select-filter-product').val(select_value);
+                    load_data_table(data.data);
+                    set_pagination(data.data);
+                } else {
+                    console.log(data);
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
+                        .message,
+                        'danger');
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function get_product_by_id(id) {
+        return new Promise(function(resolve, reject) {
             $.ajax({
                 type: "GET",
-                url,
-                data: {
-                    pagination: true
-                },
+                url: `{{URL::to('/admin/get-product-by-id/${id}')}}`,
                 success: function(data) {
                     if (data.status == 200) {
-                        $('#keyword-search-product').val(search_keyword);
-                        $('.select-filter-product').val(select_value);
-                        load_data_table(data.data);
-                        set_pagination(data.data);
+                        resolve(data.data);
                     } else {
-                        console.log(data);
-                        show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
-                            .message,
-                            'danger');
+                        resolve(data.message);
                     }
                 },
                 error: function(data) {
-                    console.log(data);
+                    reject("Error");
                 }
             });
-        }
+        });
+    }
 
-        function get_product_by_id(id) {
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    type: "GET",
-                    url: `{{URL::to('/admin/get-product-by-id/${id}')}}`,
-                    success: function(data) {
-                        if (data.status == 200) {
-                            resolve(data.data);
-                        } else {
-                            resolve(data.message);
-                        }
-                    },
-                    error: function(data) {
-                        reject("Error");
+    function add_product(product_name, product_slug, category_product_id,
+        brand_id, product_quantity, product_desc, product_cost, product_price,
+        product_price_discount,
+        product_image, product_status) {
+        let form_data = new FormData();
+        form_data.append('product_name', product_name);
+        form_data.append('product_slug', product_slug);
+        form_data.append('category_product_id', category_product_id);
+        form_data.append('brand_id', brand_id);
+        form_data.append('product_quantity', product_quantity);
+        form_data.append('product_desc', product_desc);
+        form_data.append('product_cost', product_cost);
+        form_data.append('product_price', product_price);
+        form_data.append('product_price_discount', product_price_discount);
+        form_data.append('product_image', product_image);
+        form_data.append('product_status', product_status);
+
+        $.ajax({
+            type: "POST",
+            url: "{{URL::to('/admin/add-product')}}",
+            headers: {
+                'X-CSRF-TOKEN': "{{csrf_token()}}"
+            },
+            data: form_data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(data) {
+                if (data.status == 200) {
+                    show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
+                        data.message, 'success');
+                    set_product_data({}, false);
+                    $('#product_status').val('1');
+                    get_product();
+                    $('#product_slug').removeClass('is-invalid');
+                    $('#product_slug').next().text('Vui lòng nhập slug!');
+                    $('#product_price').removeClass('is-invalid');
+                    $('#product_price').next().text('Vui lòng nhập giá bán!');
+                } else {
+                    console.log(data);
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>',
+                        data.message, 'danger');
+                }
+            },
+            error: function(data) {
+                if (data.status == 422) {
+                    if (data.responseJSON.errors.product_slug) {
+                        $('#form-product').removeClass('was-validated');
+                        $('#product_slug').addClass('is-invalid');
+                        $('#product_slug').next().text(data.responseJSON.errors
+                            .product_slug[0]);
+                    } else if (data.status == 422 && data.responseJSON.errors.product_price) {
+                        $('#form-product').removeClass('was-validated');
+                        $('#product_price').addClass('is-invalid');
+                        $('#product_price').next().text(data.responseJSON.errors
+                            .product_price[0]);
                     }
-                });
-            });
-        }
+                }
+            }
+        })
+    }
 
-        function add_product(product_name, product_slug, category_product_id,
-            brand_id, product_quantity, product_desc, product_content, product_cost, product_price,
-            product_price_discount,
-            product_image, product_status) {
-            let form_data = new FormData();
-            form_data.append('product_name', product_name);
-            form_data.append('product_slug', product_slug);
-            form_data.append('category_product_id', category_product_id);
-            form_data.append('brand_id', brand_id);
-            form_data.append('product_quantity', product_quantity);
-            form_data.append('product_desc', product_desc);
-            form_data.append('product_content', product_content);
-            form_data.append('product_cost', product_cost);
-            form_data.append('product_price', product_price);
-            form_data.append('product_price_discount', product_price_discount);
+    function update_product(product_id, product_name, product_slug, category_product_id,
+        brand_id, product_quantity, product_desc, product_cost, product_price,
+        product_price_discount,
+        product_image, product_status) {
+        let form_data = new FormData();
+        form_data.append('product_id', product_id);
+        form_data.append('product_name', product_name);
+        form_data.append('product_slug', product_slug);
+        form_data.append('category_product_id', category_product_id);
+        form_data.append('brand_id', brand_id);
+        form_data.append('product_quantity', product_quantity);
+        form_data.append('product_desc', product_desc);
+        form_data.append('product_cost', product_cost);
+        form_data.append('product_price', product_price);
+        form_data.append('product_price_discount', product_price_discount);
+        form_data.append('product_status', product_status);
+
+        if (product_image) {
+            console.log(product_image);
             form_data.append('product_image', product_image);
-            form_data.append('product_status', product_status);
-
-            $.ajax({
-                type: "POST",
-                url: "{{URL::to('/admin/add-product')}}",
-                headers: {
-                    'X-CSRF-TOKEN': "{{csrf_token()}}"
-                },
-                data: form_data,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(data) {
-                    if (data.status == 200) {
-                        show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
-                            data.message, 'success');
-                        set_product_data({}, false);
-                        $('#product_status').val('1');
-                        get_product();
-                        $('#product_slug').removeClass('is-invalid');
-                        $('#product_slug').next().text('Vui lòng nhập slug!');
-                        $('#product_price').removeClass('is-invalid');
-                        $('#product_price').next().text('Vui lòng nhập giá bán!');
+        }
+        $.ajax({
+            type: "POST",
+            url: "{{URL::to('/admin/edit-product')}}",
+            headers: {
+                'X-CSRF-TOKEN': "{{csrf_token()}}"
+            },
+            data: form_data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(data) {
+                if (data.status == 200) {
+                    show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
+                        data.message, 'success');
+                    $('#modal-product').modal('hide');
+                    let url = $('.pagination .page-item.active a').attr('href');
+                    let select_value = $('.select-filter-product').val();
+                    let search_keyword = $('#keyword-search-product').val();
+                    get_product(url, select_value, search_keyword);
+                    $('#product_slug').removeClass('is-invalid');
+                    $('#product_slug').next().text('Vui lòng nhập slug!');
+                    $('#product_price').removeClass('is-invalid');
+                    $('#product_price').next().text('Vui lòng nhập giá bán!');
+                    $('#product_quantity').removeClass('is-invalid');
+                    $('#product_quantity').next().text('Vui lòng nhập số lượng!');
+                } else {
+                    if (data.status == 500 && data.message ==
+                        'Số lượng sản phẩm phải lớn hơn đã bán!') {
+                        $('#form-product').removeClass('was-validated');
+                        $('#product_quantity').addClass('is-invalid');
+                        $('#product_quantity').next().text(data.message);
                     } else {
-                        console.log(data);
                         show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>',
                             data.message, 'danger');
                     }
-                },
-                error: function(data) {
-                    if (data.status == 422) {
-                        if (data.responseJSON.errors.product_slug) {
-                            $('#form-product').removeClass('was-validated');
-                            $('#product_slug').addClass('is-invalid');
-                            $('#product_slug').next().text(data.responseJSON.errors
-                                .product_slug[0]);
-                        } else if (data.status == 422 && data.responseJSON.errors.product_price) {
-                            $('#form-product').removeClass('was-validated');
-                            $('#product_price').addClass('is-invalid');
-                            $('#product_price').next().text(data.responseJSON.errors
-                                .product_price[0]);
-                        }
+                }
+            },
+            error: function(data) {
+                if (data.status == 422) {
+                    if (data.responseJSON.errors.product_slug) {
+                        $('#form-product').removeClass('was-validated');
+                        $('#product_slug').addClass('is-invalid');
+                        $('#product_slug').next().text(data.responseJSON.errors
+                            .product_slug[0]);
+                    } else if (data.status == 422 && data.responseJSON.errors.product_price) {
+                        $('#form-product').removeClass('was-validated');
+                        $('#product_price').addClass('is-invalid');
+                        $('#product_price').next().text(data.responseJSON.errors
+                            .product_price[0]);
                     }
                 }
-            })
-        }
-
-        function update_product(product_id, product_name, product_slug, category_product_id,
-            brand_id, product_quantity, product_desc, product_content, product_cost, product_price,
-            product_price_discount,
-            product_image, product_status) {
-            let form_data = new FormData();
-            form_data.append('product_id', product_id);
-            form_data.append('product_name', product_name);
-            form_data.append('product_slug', product_slug);
-            form_data.append('category_product_id', category_product_id);
-            form_data.append('brand_id', brand_id);
-            form_data.append('product_quantity', product_quantity);
-            form_data.append('product_desc', product_desc);
-            form_data.append('product_content', product_content);
-            form_data.append('product_cost', product_cost);
-            form_data.append('product_price', product_price);
-            form_data.append('product_price_discount', product_price_discount);
-            form_data.append('product_status', product_status);
-
-            if (product_image) {
-                console.log(product_image);
-                form_data.append('product_image', product_image);
             }
-            $.ajax({
-                type: "POST",
-                url: "{{URL::to('/admin/edit-product')}}",
-                headers: {
-                    'X-CSRF-TOKEN': "{{csrf_token()}}"
-                },
-                data: form_data,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(data) {
-                    if (data.status == 200) {
-                        show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
-                            data.message, 'success');
-                        $('#modal-product').modal('hide');
-                        let url = $('.pagination .page-item.active a').attr('href');
-                        let select_value = $('.select-filter-product').val();
-                        let search_keyword = $('#keyword-search-product').val();
-                        get_product(url, select_value, search_keyword);
-                        $('#product_slug').removeClass('is-invalid');
-                        $('#product_slug').next().text('Vui lòng nhập slug!');
-                        $('#product_price').removeClass('is-invalid');
-                        $('#product_price').next().text('Vui lòng nhập giá bán!');
-                        $('#product_quantity').removeClass('is-invalid');
-                        $('#product_quantity').next().text('Vui lòng nhập số lượng!');
-                    } else {
-                        if (data.status == 500 && data.message ==
-                            'Số lượng sản phẩm phải lớn hơn đã bán!') {
-                            $('#form-product').removeClass('was-validated');
-                            $('#product_quantity').addClass('is-invalid');
-                            $('#product_quantity').next().text(data.message);
-                        } else {
-                            show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>',
-                                data.message, 'danger');
-                        }
-                    }
-                },
-                error: function(data) {
-                    if (data.status == 422) {
-                        if (data.responseJSON.errors.product_slug) {
-                            $('#form-product').removeClass('was-validated');
-                            $('#product_slug').addClass('is-invalid');
-                            $('#product_slug').next().text(data.responseJSON.errors
-                                .product_slug[0]);
-                        } else if (data.status == 422 && data.responseJSON.errors.product_price) {
-                            $('#form-product').removeClass('was-validated');
-                            $('#product_price').addClass('is-invalid');
-                            $('#product_price').next().text(data.responseJSON.errors
-                                .product_price[0]);
-                        }
-                    }
+        })
+    }
+
+    function delete_product(product_id) {
+        $.ajax({
+            type: "POST",
+            url: "{{URL::to('/admin/delete-product')}}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                product_id
+            },
+            success: function(data) {
+                if (data.status == 200) {
+                    show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data
+                        .message,
+                        'success');
+                    $('#modal-confirm-delete').modal('hide');
+                    get_product();
+                } else {
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
+                        .message,
+                        'danger');
                 }
-            })
-        }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
 
-        function delete_product(product_id) {
-            $.ajax({
-                type: "POST",
-                url: "{{URL::to('/admin/delete-product')}}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    product_id
-                },
-                success: function(data) {
-                    if (data.status == 200) {
-                        show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data
-                            .message,
-                            'success');
-                        $('#modal-confirm-delete').modal('hide');
-                        get_product();
-                    } else {
-                        show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
-                            .message,
-                            'danger');
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
+    function change_status_product(product_id, url) {
+        $.ajax({
+            type: "GET",
+            url: `{{URL::to('/admin/${url}/${product_id}')}}`,
+            success: function(data) {
+                if (data.status == 200) {
+                    show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data
+                        .message,
+                        'success');
+                    let url = $('.pagination .page-item.active a').attr('href');
+                    let select_value = $('.select-filter-product').val();
+                    let search_keyword = $('#keyword-search-product').val();
+                    get_product(url, select_value, search_keyword);
+                } else {
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
+                        .message,
+                        'danger');
                 }
-            })
-        }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
 
-        function change_status_product(product_id, url) {
-            $.ajax({
-                type: "GET",
-                url: `{{URL::to('/admin/${url}/${product_id}')}}`,
-                success: function(data) {
-                    if (data.status == 200) {
-                        show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data
-                            .message,
-                            'success');
-                        let url = $('.pagination .page-item.active a').attr('href');
-                        let select_value = $('.select-filter-product').val();
-                        let search_keyword = $('#keyword-search-product').val();
-                        get_product(url, select_value, search_keyword);
-                    } else {
-                        show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
-                            .message,
-                            'danger');
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
+    function set_product_data(data, status) {
+        $('#form-product').removeClass('was-validated');
+
+        $('#product_id').val(data.product_id);
+        $('#product_name').val(data.product_name);
+        $('#product_slug').val(data.product_slug);
+        $('#category_product_id').val(data.category_product_id);
+        $('#brand_id').val(data.brand_id);
+        $('#product_image').val('');
+        $('#product_desc').val(data.product_desc);
+        $('#product_cost').val(data.product_cost);
+        $('#product_price').val(data.product_price);
+        $('#product_price_discount').val(data.product_price_discount || 0);
+        $('#product_quantity').val(data.product_quantity);
+        $('#product_sold').val(data.product_sold);
+        $('#product_status').val(data.product_status);
+
+        $('#product_name').prop('disabled', status);
+        $('#product_slug').prop('disabled', status);
+        $('#category_product_id').prop('disabled', status);
+        $('#brand_id').prop('disabled', status);
+        $('#product_image').prop('disabled', status);
+        $('#product_desc').prop('disabled', status);
+        $('#product_cost').prop('disabled', status);
+        $('#product_price').prop('disabled', status);
+        $('#product_price_discount').prop('disabled', status);
+        $('#product_quantity').prop('disabled', status);
+        $('#product_sold').prop('disabled', status);
+        $('#product_status').prop('disabled', status);
+    }
+
+    function get_all_category_product() {
+        $.ajax({
+            type: "GET",
+            url: `{{URL::to('/admin/get-all-category-product')}}`,
+            success: function(data) {
+                if (data.status == 200) {
+                    $('#category_product_id').empty();
+                    $('#category_product_id ').append(
+                        data.data.map((item) => {
+                            return `<option value="${item.category_product_id}">${item.category_product_name}</option>`;
+                        }).join('')
+                    );
+                } else {
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
+                        .message,
+                        'danger');
                 }
-            })
-        }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
 
-        function set_product_data(data, status) {
-            $('#form-product').removeClass('was-validated');
-
-            $('#product_id').val(data.product_id);
-            $('#product_name').val(data.product_name);
-            $('#product_slug').val(data.product_slug);
-            $('#category_product_id').val(data.category_product_id);
-            $('#brand_id').val(data.brand_id);
-            $('#product_image').val('');
-            $('#product_desc').val(data.product_desc);
-            $('#product_content').val(data.product_content);
-            $('#product_cost').val(data.product_cost);
-            $('#product_price').val(data.product_price);
-            $('#product_price_discount').val(data.product_price_discount || 0);
-            $('#product_quantity').val(data.product_quantity);
-            $('#product_sold').val(data.product_sold);
-            $('#product_status').val(data.product_status);
-
-            $('#product_name').prop('disabled', status);
-            $('#product_slug').prop('disabled', status);
-            $('#category_product_id').prop('disabled', status);
-            $('#brand_id').prop('disabled', status);
-            $('#product_image').prop('disabled', status);
-            $('#product_desc').prop('disabled', status);
-            $('#product_content').prop('disabled', status);
-            $('#product_cost').prop('disabled', status);
-            $('#product_price').prop('disabled', status);
-            $('#product_price_discount').prop('disabled', status);
-            $('#product_quantity').prop('disabled', status);
-            $('#product_sold').prop('disabled', status);
-            $('#product_status').prop('disabled', status);
-        }
-
-        function get_all_category_product() {
-            $.ajax({
-                type: "GET",
-                url: `{{URL::to('/admin/get-all-category-product')}}`,
-                success: function(data) {
-                    if (data.status == 200) {
-                        $('#category_product_id').empty();
-                        $('#category_product_id ').append(
-                            data.data.map((item) => {
-                                return `<option value="${item.category_product_id}">${item.category_product_name}</option>`;
-                            }).join('')
-                        );
-                    } else {
-                        show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
-                            .message,
-                            'danger');
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
+    function get_all_brand() {
+        $.ajax({
+            type: "GET",
+            url: `{{URL::to('/admin/get-all-brand')}}`,
+            success: function(data) {
+                if (data.status == 200) {
+                    $('#brand_id').empty();
+                    $('#brand_id ').append(
+                        data.data.map((item) => {
+                            return `<option value="${item.brand_id}">${item.brand_name}</option>`;
+                        }).join('')
+                    );
+                } else {
+                    show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
+                        .message,
+                        'danger');
                 }
-            })
-        }
-
-        function get_all_brand() {
-            $.ajax({
-                type: "GET",
-                url: `{{URL::to('/admin/get-all-brand')}}`,
-                success: function(data) {
-                    if (data.status == 200) {
-                        $('#brand_id').empty();
-                        $('#brand_id ').append(
-                            data.data.map((item) => {
-                                return `<option value="${item.brand_id}">${item.brand_name}</option>`;
-                            }).join('')
-                        );
-                    } else {
-                        show_alert('<i class="fa-solid fa-circle-xmark me-2"></i>', data
-                            .message,
-                            'danger');
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
-                }
-            })
-        }
-    });
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
+});
 </script>
 @endsection

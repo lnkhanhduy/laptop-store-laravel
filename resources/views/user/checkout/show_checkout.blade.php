@@ -8,7 +8,7 @@
             <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
         </ol>
     </nav>
-    <div class="container">
+    <div class="">
         <h2 class="text-title text-start mb-3 ms-2">Thanh toán</h2>
         <div class="row">
             <div class="col-md-6">
@@ -81,22 +81,21 @@
                     </div>
                     <div class="card-body">
                         @php
-                        $total = 0;
+$total = 0;
                         @endphp
 
                         @foreach($cart as $cart_value)
                         @php
-                        if($cart_value->getProduct->product_price_discount!=0){
-                        $total += $cart_value->quantity*$cart_value->getProduct->product_price_discount;
-                        }
-                        else{
-                        $total += $cart_value->quantity*$cart_value->getProduct->product_price;
-                        }
+    if ($cart_value->getProduct->product_price_discount != 0) {
+        $total += $cart_value->quantity * $cart_value->getProduct->product_price_discount;
+    } else {
+        $total += $cart_value->quantity * $cart_value->getProduct->product_price;
+    }
                         @endphp
                         <div class="d-flex border-bottom mt-2 pb-2">
                             <div class="col-6 d-flex">
                                 <div class="col-4">
-                                    <img src="{{URL::to('/public/uploads/product/'.$cart_value->getProduct->product_image)}}"
+                                    <img src="{{URL::to('/public/uploads/product/' . $cart_value->getProduct->product_image)}}"
                                         style="width: 100%; height: 90px; object-fit: cover">
                                 </div>
                                 <div class="col-8 ps-3">
@@ -104,7 +103,7 @@
                                 </div>
                             </div>
                             <div class="col-2 text-end mt-1">
-                                @if($cart_value->getProduct->product_price_discount!=0)
+                                @if($cart_value->getProduct->product_price_discount != 0)
                                 {{number_format($cart_value->getProduct->product_price_discount) . ' VND'}}
                                 @else
                                 {{number_format($cart_value->getProduct->product_price) . ' VND'}}
@@ -115,11 +114,11 @@
                                     value="{{$cart_value->quantity}}" min="1" style="width: 60px; flex: none;" disabled>
                             </div>
                             <div class="col-2 mt-1 text-end">
-                                @if($cart_value->getProduct->product_price_discount!=0)
-                                {{number_format($cart_value->quantity*$cart_value->getProduct->product_price_discount)
-                                .' VND'}}
+                                @if($cart_value->getProduct->product_price_discount != 0)
+                                {{number_format($cart_value->quantity * $cart_value->getProduct->product_price_discount)
+            . ' VND'}}
                                 @else
-                                {{number_format($cart_value->quantity*$cart_value->getProduct->product_price) .' VND'}}
+                                {{number_format($cart_value->quantity * $cart_value->getProduct->product_price) . ' VND'}}
                                 @endif
                             </div>
                         </div>
@@ -164,68 +163,68 @@
 <!-- Start script -->
 @section('script')
 <script type="text/javascript">
-    $(document).ready(function() {
-        let payment = parseInt($('.text-total-payment').text().replace(/[^0-9]/g, ""));
-        $('.input-total-payment').val(payment);
+$(document).ready(function() {
+    let payment = parseInt($('.text-total-payment').text().replace(/[^0-9]/g, ""));
+    $('.input-total-payment').val(payment);
 
-        $('.btn-get-discount').click(function() {
-            let code_discount = $('#code-discount').val();
+    $('.btn-get-discount').click(function() {
+        let code_discount = $('#code-discount').val();
 
-            if (code_discount != '') {
-                $('#checkout_voucher_id').val('');
-                check_discount_code(code_discount);
-            }
-        })
-
-        $('#form-checkout').submit(function(e) {
-            e.preventDefault()
-            if (this.checkValidity() === false) {
-                e.stopPropagation();
-            } else {
-                this.submit();
-            }
-        });
-
-        function check_discount_code(code_discount) {
-            $.ajax({
-                type: "GET",
-                url: "{{URL::to('/check-discount-code-user')}}",
-                data: {
-                    code_discount
-                },
-                success: function(data) {
-                    if (data.status == 200) {
-                        $('#checkout_voucher_id').val(data.data.voucher_id);
-                        $('.error-check-discount').addClass('d-none');
-                        $('.text-total-payment-old').removeClass('d-none');
-                        $('.text-total-payment-old').text(format_currency(payment));
-                        if (data.data.voucher_type == 1) {
-                            $('.text-discount-payment').text("-" + format_currency(data.data
-                                .voucher_discount_amount));
-                            $('.text-total-payment').text(format_currency(payment - data.data
-                                .voucher_discount_amount))
-                            $('.input-total-payment').val(payment - data.data
-                                .voucher_discount_amount)
-                        } else {
-                            let discount = data.data.voucher_discount_amount *
-                                payment / 100;
-                            $('.text-discount-payment').text('-' + format_currency(
-                                    discount) + ' (-' + data.data.voucher_discount_amount +
-                                '%)');
-                            $('.text-total-payment').text(format_currency(payment - discount))
-                            $('.input-total-payment').val(payment - discount)
-                        }
-                    } else if (data.status == 422) {
-                        $('.error-check-discount').removeClass('d-none');
-                        $('.error-check-discount').text(data.message);
-                    }
-                },
-                error: function(data) {
-                    console.log(data)
-                }
-            })
+        if (code_discount != '') {
+            $('#checkout_voucher_id').val('');
+            check_discount_code(code_discount);
         }
     })
+
+    $('#form-checkout').submit(function(e) {
+        e.preventDefault()
+        if (this.checkValidity() === false) {
+            e.stopPropagation();
+        } else {
+            this.submit();
+        }
+    });
+
+    function check_discount_code(code_discount) {
+        $.ajax({
+            type: "GET",
+            url: "{{URL::to('/check-discount-code-user')}}",
+            data: {
+                code_discount
+            },
+            success: function(data) {
+                if (data.status == 200) {
+                    $('#checkout_voucher_id').val(data.data.voucher_id);
+                    $('.error-check-discount').addClass('d-none');
+                    $('.text-total-payment-old').removeClass('d-none');
+                    $('.text-total-payment-old').text(format_currency(payment));
+                    if (data.data.voucher_type == 1) {
+                        $('.text-discount-payment').text("-" + format_currency(data.data
+                            .voucher_discount_amount));
+                        $('.text-total-payment').text(format_currency(payment - data.data
+                            .voucher_discount_amount))
+                        $('.input-total-payment').val(payment - data.data
+                            .voucher_discount_amount)
+                    } else {
+                        let discount = data.data.voucher_discount_amount *
+                            payment / 100;
+                        $('.text-discount-payment').text('-' + format_currency(
+                                discount) + ' (-' + data.data.voucher_discount_amount +
+                            '%)');
+                        $('.text-total-payment').text(format_currency(payment - discount))
+                        $('.input-total-payment').val(payment - discount)
+                    }
+                } else if (data.status == 422) {
+                    $('.error-check-discount').removeClass('d-none');
+                    $('.error-check-discount').text(data.message);
+                }
+            },
+            error: function(data) {
+                console.log(data)
+            }
+        })
+    }
+})
 </script>
 @endsection
 <!-- End script -->

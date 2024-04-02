@@ -14,7 +14,7 @@ class AdminController extends Controller
     use UtilitiesTrait;
     public function show_admin_login()
     {
-        if(Session::get('admin_id')) {
+        if (Session::get('admin_id')) {
             return Redirect::to('/admin');
         }
         return view('admin.login.admin_login');
@@ -29,7 +29,7 @@ class AdminController extends Controller
 
         $account = Admin::where('admin_email', $request->email)->where('admin_password', md5($request->password))->first();
 
-        if($account) {
+        if ($account) {
             Session::put('admin_name', $account->admin_name);
             Session::put('admin_id', $account->admin_id);
 

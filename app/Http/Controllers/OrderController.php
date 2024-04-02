@@ -85,41 +85,41 @@ class OrderController extends Controller
         }
     }
 
-    public function add_order_user(Request $request)
+    public function save_order_user(Request $request)
     {
         $order = new Order();
         $order->user_id = Session::get('user_id');
         $order->order_code = 'DH' . Str::random(10);
-        $order->order_name = $request->name;
-        $order->order_address = $request->address;
-        $order->order_email = $request->email;
-        $order->order_phone = $request->phone;
-        $order->order_note = $request->note || '';
-        $order->order_payment_method = $request->payment_method;
+        $order->order_name = $request->order_name;
+        $order->order_address = $request->order_address;
+        $order->order_phone = $request->order_phone;
+        $order->order_note = $request->order_note || '';
+        $order->order_payment_method = $request->order_payment;
         $order->voucher_id = $request->voucher_id || 0;
-        $order->order_total = $request->total;
+        $order->order_total = $request->order_total;
         $order->order_status = 0;
         $order->save();
 
-        $data_cart_id_array = explode(",", $request->data_cart_id);
-        $cart = Cart::whereIn('cart_id', $data_cart_id_array)->get();
+        $cart = Cart::where('user_id', Session::get('user_id'))->get();
 
         foreach ($cart as $key => $value) {
-            $order_detail = new OrderDetail();
-            $order_detail->order_id = $order->order_id;
-            $order_detail->product_id = $value->product_id;
-            $order_detail->product_quantity = $value->quantity;
-            $order_detail->product_price = $value->getProduct->product_price_discount > 0 ? $value->getProduct->product_price_discount : $value->getProduct->product_price;
-            $order_detail->save();
-
             $product = Product::find($value->product_id);
-            $product->product_sold = $product->product_sold + $value->quantity;
-            $product->save();
+            if ($product->product_quantity - $product->product_sold >= $value->quantity) {
+                $product->product_sold = $product->product_sold + $value->quantity;
+                $product->save();
+
+                $order_detail = new OrderDetail();
+                $order_detail->order_id = $order->order_id;
+                $order_detail->product_id = $value->product_id;
+                $order_detail->product_quantity = $value->quantity;
+                $order_detail->product_price = $value->getProduct->product_price_discount > 0 ? $value->getProduct->product_price_discount : $value->getProduct->product_price;
+                $order_detail->save();
+            }
 
             $time_now = Carbon::now()->toDateString();
             $statistical = Statistical::where('statistical_date', $time_now)->first();
 
-            if($statistical) {
+            if ($statistical) {
                 $statistical->statistical_quantity = $statistical->statistical_quantity + $value->quantity;
                 $statistical->statistical_sales = floatval($statistical->statistical_sales) + floatval($value->getProduct->product_price_discount > 0 ? $value->getProduct->product_price_discount : $value->getProduct->product_price) * $value->quantity;
                 $statistical->statistical_profit = floatval($statistical->statistical_profit) + floatval($value->getProduct->product_price_discount > 0 ? $value->getProduct->product_price_discount : $value->getProduct->product_price) * $value->quantity - floatval($value->getProduct->product_cost) * $value->quantity;
@@ -138,11 +138,11 @@ class OrderController extends Controller
         $statistical->statistical_total_order = $statistical->statistical_total_order + 1;
         $statistical->save();
 
-        if($request->voucher_id && $request->voucher_id != 0) {
+        if ($request->voucher_id && $request->voucher_id != 0) {
             $voucher = Voucher::find($request->voucher_id);
-            if($voucher) {
+            if ($voucher) {
                 $voucher->voucher_used = $voucher->voucher_used + 1;
-                if($voucher->voucher_quantity == $voucher->voucher_used) {
+                if ($voucher->voucher_quantity == $voucher->voucher_used) {
                     $voucher->voucher_status = 2;
                 }
 
@@ -150,29 +150,15 @@ class OrderController extends Controller
                 $voucher->save();
             }
         }
-        Cart::whereIn('cart_id', $data_cart_id_array)->delete();
+        Cart::where('user_id', Session::get('user_id'))->delete();
 
         Session::put('message', 'Đặt hàng thành công');
-        return Redirect::to('/');
+        return Redirect::to('/trang-chu');
     }
 
     public function show_page_history_order()
     {
-        $order = Order::where('user_id', Session::get('user_id'))->orderBy('order_id', 'desc')->get();
-
-        if ($order->isNotEmpty()) {
-            $array_order_detail = [];
-
-            foreach ($order as $key => $value) {
-                $order_detail = OrderDetail::where('order_id', $value->order_id)->with('getProduct')->get();
-                $array_order_detail[] = $order_detail;
-            }
-
-            return view('user.order.show_history_order', [
-                'order' => $order,
-                'order_detail' => $array_order_detail,
-            ]);
-        }
+        $order = Order::where('user_id', Session::get('user_id'))->with(('getOrderDetail'))->orderBy('order_id', 'desc')->get();
 
         return view('user.order.show_history_order', compact('order'));
     }

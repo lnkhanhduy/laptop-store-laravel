@@ -16,10 +16,9 @@ return new class () extends Migration {
             $table->string('order_code');
             $table->string('order_name');
             $table->string('order_address');
-            $table->string('order_email');
             $table->string('order_phone');
             $table->text('order_note');
-            $table->integer('order_payment_method');
+            $table->string('order_payment_method');
             $table->integer('voucher_id');
             $table->string('order_total');
             $table->integer('order_status');

@@ -9,8 +9,20 @@ class Product extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'product_name','product_slug','category_product_id' ,'brand_id','product_quantity','product_sold','product_desc','product_content','product_cost','product_price','product_price_discount','product_image','product_status','product_views'
-       ];
+        'product_name',
+        'product_slug',
+        'category_product_id',
+        'brand_id',
+        'product_quantity',
+        'product_sold',
+        'product_desc',
+        'product_cost',
+        'product_price',
+        'product_price_discount',
+        'product_image',
+        'product_status',
+        'product_views'
+    ];
     protected $primaryKey = 'product_id';
     protected $table = 'tbl_product';
 

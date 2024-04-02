@@ -107,12 +107,12 @@
 
 @section('admin_script')
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         document.title = "Admin - Thương hiệu";
         get_brand();
         convert_to_slug("#brand_name", "#brand_slug");
 
-        $('.btn-add-brand').click(function() {
+        $('.btn-add-brand').click(function () {
             $('#modal-title-brand').text('Thêm thương hiệu');
             set_brand_data({}, false);
             $('#brand_status').val('1');
@@ -121,60 +121,60 @@
             $('#modal-brand').modal('show');
         });
 
-        $(document).on('click', '.btn-detail-brand', function() {
+        $(document).on('click', '.btn-detail-brand', function () {
             let brand_id = $(this).parent().parent().parent().parent().data('brand-id');
-            get_brand_by_id(brand_id).then(function(result) {
+            get_brand_by_id(brand_id).then(function (result) {
                 set_brand_data(result, true);
                 $('#modal-title-brand').text('Thông tin thương hiệu');
                 $('#btn-submit-brand').hide();
                 $('#modal-brand').modal('show');
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error(error);
             });
         });
 
-        $(document).on('click', '.btn-edit-brand', function() {
+        $(document).on('click', '.btn-edit-brand', function () {
             let brand_id = $(this).parent().parent().parent().parent().data('brand-id');
-            get_brand_by_id(brand_id).then(function(result) {
+            get_brand_by_id(brand_id).then(function (result) {
                 set_brand_data(result, false);
                 $('#modal-title-brand').text('Cập nhật thương hiệu');
                 $('#btn-submit-brand').show();
                 $('#btn-submit-brand').text('Cập nhật');
                 $('#modal-brand').modal('show');
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error(error);
             });
         });
 
-        $(document).on('click', '.btn-delete-brand', function() {
+        $(document).on('click', '.btn-delete-brand', function () {
             let brand_id = $(this).parent().parent().parent().parent().data('brand-id');
             show_modal_confirm_delete('Bạn muốn xóa thương hiệu này', 'data-brand-id', brand_id);
         });
 
-        $(document).on('click', '.btn-active-brand', function() {
+        $(document).on('click', '.btn-active-brand', function () {
             let brand_id = $(this).parent().parent().data('brand-id');
             change_status_brand(brand_id, 'active-brand');
         });
 
-        $(document).on('click', '.btn-unactive-brand', function() {
+        $(document).on('click', '.btn-unactive-brand', function () {
             let brand_id = $(this).parent().parent().data('brand-id');
             change_status_brand(brand_id, 'unactive-brand');
         });
 
-        $('#btn-submit-confirm-delete').click(function() {
+        $('#btn-submit-confirm-delete').click(function () {
             let data_class = $(this).attr('data-class');
             if (data_class == 'single') {
                 let brand_id = $(this).attr('data-brand-id');
                 delete_brand(brand_id);
             } else if (data_class == 'multi') {
                 let brand_ids = $(this).attr('data-brand-id').split(',');
-                $.each(brand_ids, function(key, value) {
+                $.each(brand_ids, function (key, value) {
                     delete_brand(value);
                 });
             }
         })
 
-        $(document).on('change', '.select-filter-brand', function() {
+        $(document).on('change', '.select-filter-brand', function () {
             let select = $(this).val();
             if (select == 1 || select == 2 || select == 3 || select == 7) {
                 $('.btn-filter-brand').addClass('d-none');
@@ -199,10 +199,10 @@
             }
         })
 
-        $('.btn-filter-brand').click(function() {
+        $('.btn-filter-brand').click(function () {
             let select = $('.select-filter-brand').val();
             let brand_ids = [];
-            $('#tbody-brand > tr').each(function(index, item) {
+            $('#tbody-brand > tr').each(function (index, item) {
                 if ($(this).find('input').is(':checked')) {
                     let brand_id = $(this).data('brand-id');
                     switch (select) {
@@ -227,7 +227,7 @@
             }
         })
 
-        $("#form-brand").submit(function(e) {
+        $("#form-brand").submit(function (e) {
             e.preventDefault();
             if (this.checkValidity() === false) {
                 e.stopPropagation();
@@ -245,7 +245,7 @@
             }
         });
 
-        $('#form-search-brand').submit(function(e) {
+        $('#form-search-brand').submit(function (e) {
             e.preventDefault();
             let keyword = $('#keyword-search-brand').val();
             if (keyword) {
@@ -256,13 +256,13 @@
             }
         });
 
-        $('#keyword-search-brand').keyup(function(e) {
+        $('#keyword-search-brand').keyup(function (e) {
             if ($(this).val().length == 0) {
                 get_brand();
             }
         })
 
-        $(document).on('click', '.pagination .page-link', function(e) {
+        $(document).on('click', '.pagination .page-link', function (e) {
             e.preventDefault();
             let url = $(this).attr('href');
             let keyword = $('#keyword-search-brand').val();
@@ -273,7 +273,7 @@
 
         function load_data_table(data) {
             $('#tbody-brand').empty();
-            $.each(data, function(key, value) {
+            $.each(data, function (key, value) {
                 $('#tbody-brand').append(
                     `<tr data-brand-id="${value.brand_id}">>
                         <td>
@@ -283,11 +283,11 @@
                         <td>${value.brand_name}</td>
                         <td>${value.brand_slug}</td>
                         <td class="text-center">
-                            ${value.brand_status == 1 ? 
-                                `<button class="btn btn-success btn-sm btn-unactive-brand">Hiển thị</button>`
-                                :
-                                `<button class="btn btn-danger btn-sm btn-active-brand">Ẩn</button>`
-                            }
+                            ${value.brand_status == 1 ?
+                        `<button class="btn btn-success btn-sm btn-unactive-brand">Hiển thị</button>`
+                        :
+                        `<button class="btn btn-danger btn-sm btn-active-brand">Ẩn</button>`
+                    }
                         </td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center">
@@ -314,7 +314,7 @@
                 data: {
                     pagination: true
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         $('#keyword-search-brand').val(search_keyword);
                         $('.select-filter-brand').val(select_value);
@@ -325,25 +325,25 @@
                             'danger');
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     console.log(data);
                 }
             });
         }
 
         function get_brand_by_id(id) {
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 $.ajax({
                     type: "GET",
                     url: `{{URL::to('/admin/get-brand-by-id/${id}')}}`,
-                    success: function(data) {
+                    success: function (data) {
                         if (data.status == 200) {
                             resolve(data.data);
                         } else {
                             resolve(data.message);
                         }
                     },
-                    error: function(data) {
+                    error: function (data) {
                         reject("Error");
                     }
                 });
@@ -360,7 +360,7 @@
                     brand_slug,
                     brand_status
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
                             data.message, 'success');
@@ -374,7 +374,7 @@
                             data.message, 'danger');
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     if (data.status == 422 && data.responseJSON.errors.brand_slug) {
                         $('#form-brand').removeClass('was-validated');
                         $('#brand_slug').addClass('is-invalid');
@@ -396,7 +396,7 @@
                     brand_slug,
                     brand_status
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         show_alert('<i class="fa-solid fa-circle-check me-2"></i>',
                             data.message, 'success');
@@ -412,7 +412,7 @@
                             data.message, 'danger');
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     if (data.status == 422 && data.responseJSON.errors.brand_slug) {
                         $('#form-brand').removeClass('was-validated');
                         $('#brand_slug').addClass('is-invalid');
@@ -431,7 +431,7 @@
                     _token: "{{ csrf_token() }}",
                     brand_id
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data.message,
                             'success');
@@ -442,7 +442,7 @@
                             'danger');
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     console.log(data);
                 }
             })
@@ -452,7 +452,7 @@
             $.ajax({
                 type: "GET",
                 url: `{{URL::to('/admin/${url}/${brand_id}')}}`,
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         show_alert('<i class="fa-solid fa-circle-check me-2"></i>', data.message,
                             'success');
@@ -465,7 +465,7 @@
                             'danger');
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     console.log(data);
                 }
             })

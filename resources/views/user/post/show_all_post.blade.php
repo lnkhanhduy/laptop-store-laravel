@@ -7,13 +7,13 @@
     <div class="col-9">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{URL::to('/')}}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     Tin tức
                 </li>
             </ol>
         </nav>
-        <div class="container">
+        <div class="">
             <div class="d-flex align-items-center">
                 <h2 class="text-title text-start flex-grow-1 d-flex align-items-center">Tất cả bài viết</h2>
                 <div>
@@ -43,63 +43,63 @@
 <!-- Start script -->
 @section('script')
 <script type="text/javascript">
-    $(document).ready(function() {
-        document.title = ("Tin tức");
+$(document).ready(function() {
+    document.title = ("Tin tức");
 
-        let data_send = {
+    let data_send = {
+        order_by: "new",
+    }
+
+    get_product(data_send);
+
+    $(document).on('click', '.btn-order-by-new', function() {
+        $('.btn-order-by').removeClass('btn-primary');
+        $('.btn-order-by').addClass('btn-outline-primary');
+        $(this).removeClass('btn-outline-primary');
+        $(this).addClass('btn-primary');
+        data_send = {
             order_by: "new",
         }
 
         get_product(data_send);
+    })
 
-        $(document).on('click', '.btn-order-by-new', function() {
-            $('.btn-order-by').removeClass('btn-primary');
-            $('.btn-order-by').addClass('btn-outline-primary');
-            $(this).removeClass('btn-outline-primary');
-            $(this).addClass('btn-primary');
-            data_send = {
-                order_by: "new",
-            }
+    $(document).on('click', '.btn-order-by-most-view', function() {
+        $('.btn-order-by').removeClass('btn-primary');
+        $('.btn-order-by').addClass('btn-outline-primary');
+        $(this).removeClass('btn-outline-primary');
+        $(this).addClass('btn-primary');
+        data_send = {
+            order_by: "view",
+        }
 
-            get_product(data_send);
-        })
+        get_product(data_send);
+    })
 
-        $(document).on('click', '.btn-order-by-most-view', function() {
-            $('.btn-order-by').removeClass('btn-primary');
-            $('.btn-order-by').addClass('btn-outline-primary');
-            $(this).removeClass('btn-outline-primary');
-            $(this).addClass('btn-primary');
-            data_send = {
-                order_by: "view",
-            }
+    $(document).on('click', '.pagination .page-link', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
 
-            get_product(data_send);
-        })
+        get_product(data_send, url);
+    })
 
-        $(document).on('click', '.pagination .page-link', function(e) {
-            e.preventDefault();
-            let url = $(this).attr('href');
-
-            get_product(data_send, url);
-        })
-
-        function get_product(data, url = "{{URL::to('/get-all-post-user')}}") {
-            $.ajax({
-                type: "GET",
-                url,
-                data,
-                success: function(data) {
-                    if (data.status == 200 && data.data.data.length > 0) {
-                        set_pagination(data.data);
-                        $("#list-post").empty();
-                        $.each(data.data.data, function(key, value) {
-                            $("#list-post").append(`
+    function get_product(data, url = "{{URL::to('/get-all-post-user')}}") {
+        $.ajax({
+            type: "GET",
+            url,
+            data,
+            success: function(data) {
+                if (data.status == 200 && data.data.data.length > 0) {
+                    set_pagination(data.data);
+                    $("#list-post").empty();
+                    $.each(data.data.data, function(key, value) {
+                        $("#list-post").append(`
                                 <div class="mb-2 border-bottom pb-2 px-2">
                                     <a href="{{URL::to('/bai-viet/${value.post_slug}')}}" class="text-decoration-none">
                                         <div class="row">
                                             <div class="col-3">
                                                 <img src="{{URL::to('/public/uploads/post/${value.post_image}')}}"
-                                                    class="object-fit-cover w-100" height="120px" alt="${value.post_title}">
+                                                    class="object-fit-contain w-100" height="120px" alt="${value.post_title}">
                                             </div>
                                             <div class="col-8">
                                                 <h5 class="card-title-post mb-2">${value.post_title}</h5>
@@ -109,15 +109,15 @@
                                     </a>
                                 </div>
                             `);
-                        })
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
+                    })
                 }
-            })
-        }
-    })
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
+    }
+})
 </script>
 @endsection
 <!-- End script -->

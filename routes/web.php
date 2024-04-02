@@ -151,6 +151,7 @@ Route::post('/reset-password', 'App\Http\Controllers\UserController@reset_passwo
 
 // Home
 Route::get('/', 'App\Http\Controllers\UserController@show_page_home');
+Route::get('/trang-chu', 'App\Http\Controllers\UserController@show_page_home');
 
 // Product
 Route::get('/chi-tiet-san-pham/{product_slug}', 'App\Http\Controllers\ProductController@show_page_detail_product');
@@ -195,7 +196,7 @@ Route::get('/check-discount-code-user', 'App\Http\Controllers\VoucherController@
 
 //Order
 Route::get('/lich-su-dat-hang', 'App\Http\Controllers\OrderController@show_page_history_order')->middleware(AuthenticateUser::class);
-Route::post('/add-order-user', 'App\Http\Controllers\OrderController@add_order_user')->middleware(AuthenticateUser::class);
+Route::post('/save-order', 'App\Http\Controllers\OrderController@save_order_user')->middleware(AuthenticateUser::class);
 
 //Contact
 Route::get('/lien-he', 'App\Http\Controllers\UserController@show_page_contact');

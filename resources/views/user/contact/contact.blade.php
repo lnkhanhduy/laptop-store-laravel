@@ -7,13 +7,13 @@
     <div class="col-9">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{URL::to('/')}}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     Liên hệ
                 </li>
             </ol>
         </nav>
-        <div class="container">
+        <div class="">
             <h2 class="text-title text-start mb-3 ms-2">Liên hệ</h2>
             <div class="card">
                 <div class="card-body py-2">
@@ -51,9 +51,9 @@
 <!-- Start script -->
 @section('script')
 <script type="text/javascript">
-    $(document).ready(function() {
-        document.title = ("Liên hệ");
-    })
+$(document).ready(function() {
+    document.title = ("Liên hệ");
+})
 </script>
 @endsection
 <!-- End script -->

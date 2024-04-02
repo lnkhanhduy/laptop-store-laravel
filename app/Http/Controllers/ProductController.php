@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function get_all_product(Request $request)
     {
         try {
-            if($request->pagination && $request->pagination == "true") {
+            if ($request->pagination && $request->pagination == "true") {
                 $all_product = Product::orderBy('product_id', 'desc')->paginate($this->linePerPageAdmin);
             } else {
                 $all_product = Product::orderBy('product_id', 'desc')->get();
@@ -92,7 +92,6 @@ class ProductController extends Controller
             'brand_id' => 'required|exists:tbl_brand,brand_id',
             'product_quantity' => 'required',
             'product_desc' => 'required',
-            'product_content' => 'required',
             'product_cost' => 'required',
             'product_price' => 'required|gt:product_cost',
             'product_image' => 'required',
@@ -105,7 +104,7 @@ class ProductController extends Controller
         try {
             $get_image = $request->file('product_image');
 
-            if($get_image) {
+            if ($get_image) {
                 $old_image_name = pathinfo($get_image->getClientOriginalName(), PATHINFO_FILENAME);
                 $image_extension = $get_image->getClientOriginalExtension();
                 $new_image_name = $old_image_name . '_' . time() . '.' . $image_extension;
@@ -120,7 +119,6 @@ class ProductController extends Controller
                     'product_quantity' => $request->product_quantity,
                     'product_sold' => 0,
                     'product_desc' => $request->product_desc,
-                    'product_content' => $request->product_content,
                     'product_cost' => $request->product_cost,
                     'product_price' => $request->product_price,
                     'product_price_discount' => $request->product_price_discount ? $request->product_price_discount : '0',
@@ -146,7 +144,6 @@ class ProductController extends Controller
             'brand_id' => 'required|exists:tbl_brand,brand_id',
             'product_quantity' => 'required',
             'product_desc' => 'required',
-            'product_content' => 'required',
             'product_cost' => 'required',
             'product_price' => 'required|gt:product_cost',
             'product_status' => 'required|in:0,1',
@@ -163,7 +160,7 @@ class ProductController extends Controller
 
             $get_image = $request->file('product_image');
 
-            if($get_image) {
+            if ($get_image) {
                 $old_image_name = pathinfo($get_image->getClientOriginalName(), PATHINFO_FILENAME);
                 $image_extension = $get_image->getClientOriginalExtension();
                 $new_image_name = $old_image_name . '_' . time() . '.' . $image_extension;
@@ -188,7 +185,6 @@ class ProductController extends Controller
                     'brand_id' => $request->brand_id,
                     'product_quantity' => $request->product_quantity,
                     'product_desc' => $request->product_desc,
-                    'product_content' => $request->product_content,
                     'product_cost' => $request->product_cost,
                     'product_price' => $request->product_price,
                     'product_price_discount' => $request->product_price_discount ? $request->product_price_discount : '0',
@@ -204,7 +200,6 @@ class ProductController extends Controller
                     'brand_id' => $request->brand_id,
                     'product_quantity' => $request->product_quantity,
                     'product_desc' => $request->product_desc,
-                    'product_content' => $request->product_content,
                     'product_cost' => $request->product_cost,
                     'product_price' => $request->product_price,
                     'product_price_discount' => $request->product_price_discount ? $request->product_price_discount : '0',
@@ -302,14 +297,14 @@ class ProductController extends Controller
     {
         $order_by = $request->order_by;
 
-        if($order_by == 'sold') {
+        if ($order_by == 'sold') {
             $product = Product::where('product_status', 1)->orderBy('product_sold', 'desc')->paginate($this->linePerPageUser);
-        } elseif($order_by == 'new') {
+        } elseif ($order_by == 'new') {
             $product = Product::where('product_status', 1)->orderBy('product_id', 'desc')->paginate($this->linePerPageUser);
         } else {
             $product = Product::where('product_status', 1)
-            ->orderByRaw('IF(CAST(product_price_discount AS SIGNED) != 0, CAST(product_price_discount AS SIGNED), CAST(product_price AS SIGNED)) ' . $order_by)
-            ->paginate($this->linePerPageUser);
+                ->orderByRaw('IF(CAST(product_price_discount AS SIGNED) != 0, CAST(product_price_discount AS SIGNED), CAST(product_price AS SIGNED)) ' . $order_by)
+                ->paginate($this->linePerPageUser);
         }
 
         return $this->successResponse($product, 'Lấy tất cả sản phẩm thành công!', 200);
@@ -319,45 +314,45 @@ class ProductController extends Controller
     {
         $order_by = $request->order_by;
 
-        if($order_by == 'sold') {
+        if ($order_by == 'sold') {
             $product = Product::with('getBrandName')
-            ->with('getCategoryName')
-            ->where(function ($query) use ($request) {
-                $query->where('product_name', 'like', '%' . $request->keyword . '%')
-                ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
-                    $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                ->with('getCategoryName')
+                ->where(function ($query) use ($request) {
+                    $query->where('product_name', 'like', '%' . $request->keyword . '%')
+                        ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
+                            $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                        })
+                        ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
+                            $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
+                        });
                 })
-                ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
-                    $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
-                });
-            })
-            ->orderBy('product_sold', 'desc')->paginate($this->linePerPageUser);
-        } elseif($order_by == 'new') {
+                ->orderBy('product_sold', 'desc')->paginate($this->linePerPageUser);
+        } elseif ($order_by == 'new') {
             $product = Product::with('getBrandName')
-            ->with('getCategoryName')
-            ->where(function ($query) use ($request) {
-                $query->where('product_name', 'like', '%' . $request->keyword . '%')
-                ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
-                    $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                ->with('getCategoryName')
+                ->where(function ($query) use ($request) {
+                    $query->where('product_name', 'like', '%' . $request->keyword . '%')
+                        ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
+                            $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                        })
+                        ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
+                            $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
+                        });
                 })
-                ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
-                    $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
-                });
-            })
-            ->orderBy('product_id', 'desc')->paginate($this->linePerPageUser);
+                ->orderBy('product_id', 'desc')->paginate($this->linePerPageUser);
         } else {
             $product = Product::with('getBrandName')
-            ->with('getCategoryName')
-            ->where(function ($query) use ($request) {
-                $query->where('product_name', 'like', '%' . $request->keyword . '%')
-                ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
-                    $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                ->with('getCategoryName')
+                ->where(function ($query) use ($request) {
+                    $query->where('product_name', 'like', '%' . $request->keyword . '%')
+                        ->orWhereHas('getBrandName', function ($brandQuery) use ($request) {
+                            $brandQuery->where('brand_name', 'like', '%' . $request->keyword . '%');
+                        })
+                        ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
+                            $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
+                        });
                 })
-                ->orWhereHas('getCategoryName', function ($categoryQuery) use ($request) {
-                    $categoryQuery->where('category_product_name', 'like', '%' . $request->keyword . '%');
-                });
-            })
-            ->orderByRaw('IF(CAST(product_price_discount AS SIGNED) != 0, CAST(product_price_discount AS SIGNED), CAST(product_price AS SIGNED)) ' . $order_by)->paginate($this->linePerPageUser);
+                ->orderByRaw('IF(CAST(product_price_discount AS SIGNED) != 0, CAST(product_price_discount AS SIGNED), CAST(product_price AS SIGNED)) ' . $order_by)->paginate($this->linePerPageUser);
         }
 
         return $this->successResponse($product, 'Lấy tất cả sản phẩm thành công!', 200);
