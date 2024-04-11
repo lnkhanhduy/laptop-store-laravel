@@ -124,17 +124,17 @@
                             <h5 class="card-title mb-2" style="height: 45px">
                                 {{$related_product_value->product_name}}</h5>
                             {!! $related_product_value->product_price_discount != '0' ?
-        "<p class='card-price'>" .
-        number_format(floatval($related_product_value->product_price_discount)) . "
+                            "<p class='card-price'>" .
+                                number_format(floatval($related_product_value->product_price_discount)) . "
                                 VND</p>" .
-        "<span class='card-price-old'>" .
-        number_format(floatval($related_product_value->product_price)) .
-        " VND</span>" .
-        "<span class='card-price-percent'>-" .
-        100 - number_format(floatval($related_product_value->product_price_discount) * 100 /
-            floatval($related_product_value->product_price), 2) . "%</span>" :
-        "<p class='card-price'>" .
-        number_format(floatval($related_product_value->product_price)) . "
+                            "<span class='card-price-old'>" .
+                                number_format(floatval($related_product_value->product_price)) .
+                                " VND</span>" .
+                            "<span class='card-price-percent'>-" .
+                                100 - number_format(floatval($related_product_value->product_price_discount) * 100 /
+                                floatval($related_product_value->product_price), 2) . "%</span>" :
+                            "<p class='card-price'>" .
+                                number_format(floatval($related_product_value->product_price)) . "
                                 VND</p>"
                             !!}
                         </div>
